@@ -35,22 +35,22 @@
 		$p_answere	= db_prepare_string( $p_answere );
 
 		# Add item
-		$query = "INSERT
-				INTO $g_mantis_faq_table
-	    		( id, project_id, poster_id, date_posted, last_modified, question, answere, view_access )
-				VALUES
-				( null, '$p_project_id', '$p_poster_id', NOW(), NOW(), '$p_question', '$p_answere', '$p_view_level' )";
-	    return db_query_bound( $query );
+		$t_query = "INSERT
+			INTO $g_mantis_faq_table
+	   		( id, project_id, poster_id, date_posted, last_modified, question, answere, view_access )
+			VALUES
+				( null, '" . db_param() . "', '" . db_param() . "', " . db_param() . ", " . db_param() . ", '" . db_param() . "', '" . db_param() . "', '" . db_param() . "' )";
+	  return db_query_bound( $t_query, array( $p_project_id, $p_poster_id, db_now(), db_now(), $p_question, $p_answere, $p_view_level) );
 	}
 	# --------------------
 	# Delete the faq entry
 	function faq_delete_query( $p_id ) {
 		global $g_mantis_faq_table;
 
-		$query = "DELETE
-				FROM $g_mantis_faq_table
-	    		WHERE id='$p_id'";
-	    return db_query_bound( $query );
+		$t_query = "DELETE
+			FROM $g_mantis_faq_table
+	  	WHERE id=" . db_param();
+	  return db_query_bound( $t_query, array( $p_id ) );
 	}
 	# --------------------
 	# Update faq item
@@ -59,24 +59,24 @@
 
 		# " character poses problem when editting so let's just convert them to '
 		$p_question	= db_prepare_string( $p_question );
-		$p_answere		= db_prepare_string( $p_answere );
+		$p_answere	= db_prepare_string( $p_answere );
 
 		# Update entry
-		$query = "UPDATE $g_mantis_faq_table
-				SET question='$p_question', answere='$p_answere',
-					project_id='$p_project_id', view_access='$p_view_level', last_modified=NOW()
-	    		WHERE id='$p_id'";
-	    return db_query_bound( $query );
+		$t_query = "UPDATE $g_mantis_faq_table
+			SET question='" . db_param() . "', answere='" . db_param() . "',
+			project_id='" . db_param() . "', view_access='" . db_param() . "', last_modified=" . db_param() . "
+	  	WHERE id=" . db_param();
+	  return db_query_bound( $t_query, array( $p_question, $p_answere, $p_project_id, $p_view_level, db_now(), $p_id ) );
 	}
 	# --------------------
 	# Selects the faq item associated with the specified id
 	function faq_select_query( $p_id ) {
 		global $g_mantis_faq_table;
 
-		$query = "SELECT *
+		$t_query = "SELECT *
 			FROM $g_mantis_faq_table
-			WHERE id='$p_id'";
-	    $result = db_query_bound( $query );
+			WHERE id=" . db_param();
+	  $result = db_query_bound( $t_query, array( $p_id ) );
 		return db_fetch_array( $result );
 	}
 	# --------------------
@@ -84,9 +84,9 @@
 	function faq_count_query( $p_project_id ) {
 		global $g_mantis_faq_table;
 
-		$query = "SELECT COUNT(*)
+		$t_query = "SELECT COUNT(*)
 				FROM $g_mantis_faq_table
-				WHERE project_id='$p_project_id' OR project_id='0000000'";
-		$result = db_query_bound( $query );
-	    return db_result( $result, 0, 0 );
+				WHERE project_id='" . db_param() . "' OR project_id='0000000'";
+		$result = db_query_bound( $t_query, array( $p_project_id ) );
+	  return db_result( $result, 0, 0 );
 	}

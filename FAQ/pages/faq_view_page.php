@@ -11,11 +11,11 @@ if (OFF == plugin_config_get('faq_view_window') ){
 $f_id = gpc_get_int( 'f_id' );
 
 	# Select the faq posts
-	$query = "SELECT *, UNIX_TIMESTAMP(date_posted) as date_posted
+	$t_query = "SELECT *, UNIX_TIMESTAMP(date_posted) as date_posted
 			FROM $g_mantis_faq_table
-			WHERE  id='$f_id'";
-	$result = db_query_bound( $query );
-    $faq_count = db_num_rows( $result );
+			WHERE  id=". db_param();
+	$result = db_query_bound( $t_query, array( $f_id ) );
+  $faq_count = db_num_rows( $result );
 
     # Loop through results
 	for ($i=0;$i<$faq_count;$i++) {
